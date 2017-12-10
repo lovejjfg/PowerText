@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ExpandableTextView">
+        <attr name="defaultLineCount" format="integer"/>
+        <attr name="defaultMoreHint" format="string"/>
+        <attr name="moreHintColor" format="color"/>
+        <attr name="isExpand" format="boolean"/>
+    </declare-styleable>
+</resources>

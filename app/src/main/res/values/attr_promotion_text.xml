@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LabelTextView">
+        <attr name="labelStrokeColor" format="color"/>
+        <attr name="labelStrokeWidth" format="dimension"/>
+        <attr name="labelStrokeRadius" format="dimension"/>
+        <attr name="labelTextSize" format="dimension"/>
+        <attr name="labelTextColor" format="color"/>
+        <attr name="labelText" format="string"/>
+        <attr name="originalText" format="string"/>
+        <attr name="labelPadding" format="dimension"/>
+        <attr name="labelMargin" format="dimension"/>
+        <attr name="labelPaddingHorizontal" format="dimension"/>
+        <attr name="labelPaddingVertical" format="dimension"/>
+        <attr name="labelFillColor" format="boolean"/>
+        <attr name="labelDrawable" format="reference"/>
+
+    </declare-styleable>
+</resources>

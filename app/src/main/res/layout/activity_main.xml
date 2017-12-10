@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context="com.lovejjfg.powertext.MainActivity">
+
+    <com.lovejjfg.powertext.ExpandableTextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:lineSpacingExtra="5dp"
+        android:textColor="#333"
+        android:textSize="16sp"
+        app:defaultLineCount="3"
+        app:defaultMoreHint="查看更多"
+        app:labelMargin="5dp"
+        app:labelPaddingHorizontal="8dp"
+        app:labelPaddingVertical="10dp"
+        app:labelStrokeRadius="4dp"
+        app:labelTextColor="#333"
+        app:labelTextSize="12sp"
+        app:moreHintColor="#f00"
+        />
+
+    <com.lovejjfg.powertext.LabelTextView
+        android:id="@+id/tvLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:textColor="#333"
+        android:textSize="16sp"
+        android:lineSpacingExtra="10dp"
+        app:labelFillColor="true"
+        app:labelMargin="5dp"
+        app:labelPaddingHorizontal="8dp"
+        app:labelPaddingVertical="10dp"
+        app:labelStrokeColor="@color/colorAccent"
+        app:labelStrokeWidth="1dp"
+        app:labelTextColor="#fff"
+        app:labelTextSize="12sp"
+        />
+
+</LinearLayout>
