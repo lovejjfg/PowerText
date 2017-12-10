@@ -101,11 +101,16 @@ public class ExpandableTextView extends LabelTextView {
         if (TextUtils.isEmpty(mOriginalText)) {
             return;
         }
-        calculateLines();
+        post(new Runnable() {
+            @Override
+            public void run() {
+                calculateLines();
+            }
+        });
+
     }
 
     private void calculateLines() {
-
         getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
@@ -117,6 +122,7 @@ public class ExpandableTextView extends LabelTextView {
                     return true;
                 }
                 int lineCount = layout.getLineCount();
+                System.out.println("lineCount:" + lineCount);
                 if (lineCount > mDefaultLineCount) {
                     String substring;
                     if (!TextUtils.isEmpty(mLabelText)) {
@@ -143,8 +149,8 @@ public class ExpandableTextView extends LabelTextView {
                     }, substring.length() + 3, mOriginalBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     if (!TextUtils.isEmpty(mLabelText)) {
                         LabelDrawable drawable = new LabelDrawable(mLabelText, mLabelTextSize, mLabelColor, mStrokeWidth, mStrokeColor, mLabelPaddingH, mLabelPaddingV, mLabelMargin, mFillColor, mLabelRadius);
-                        CenterImageSpan imageSpan = new CenterImageSpan(drawable, DynamicDrawableSpan.ALIGN_BOTTOM, ExpandableTextView.this, mStrokeWidth);
-                        mOriginalBuilder.setSpan(imageSpan, 0, mLabelText.length() + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        CenterImageSpan mImageSpan = new CenterImageSpan(drawable, DynamicDrawableSpan.ALIGN_BOTTOM, ExpandableTextView.this, mStrokeWidth, mDefaultLineCount > 1);
+                        mOriginalBuilder.setSpan(mImageSpan, 0, mLabelText.length() + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                     }
                     setText(mOriginalBuilder);
                 }
@@ -192,8 +198,8 @@ public class ExpandableTextView extends LabelTextView {
             this.isExband = in.readInt() != 0;
         }
 
-        public static final Parcelable.Creator<SavedState> CREATOR =
-                new Parcelable.Creator<SavedState>() {
+        public static final Creator<SavedState> CREATOR =
+                new Creator<SavedState>() {
                     public SavedState createFromParcel(Parcel in) {
                         return new SavedState(in);
                     }

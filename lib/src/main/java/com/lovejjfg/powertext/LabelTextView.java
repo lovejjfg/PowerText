@@ -66,7 +66,6 @@ public class LabelTextView extends AppCompatTextView {
     public int mLabelTextSize;
     protected boolean mFillColor;
     protected int mLabelRadius;
-    private Drawable mLabelDrawable;
 
     public LabelTextView(Context context) {
         this(context, null);
@@ -106,14 +105,6 @@ public class LabelTextView extends AppCompatTextView {
             updateText();
         }
     }
-
-    public void setLabelDrawable(Drawable labelDrawable) {
-        if (mLabelDrawable != labelDrawable) {
-            mLabelDrawable = labelDrawable;
-            updateText();
-        }
-    }
-
 
     public void setLabelText(String promotionText) {
         if (!TextUtils.equals(this.mLabelText, promotionText)) {
@@ -194,29 +185,22 @@ public class LabelTextView extends AppCompatTextView {
             setText(mOriginalText);
             return;
         }
-        if (isAttachedToWindow()) {
-            buildLabelText();
-        } else {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    buildLabelText();
-                }
-            });
-        }
+
+        post(new Runnable() {
+            @Override
+            public void run() {
+                buildLabelText();
+            }
+        });
 
 
     }
 
     private void buildLabelText() {
         SpannableStringBuilder mOriginBuilder = new SpannableStringBuilder("{" + mLabelText + "}" + mOriginalText);
-        if (mLabelDrawable == null) {
-            LabelDrawable drawable = new LabelDrawable(mLabelText, mLabelTextSize, mLabelColor, mStrokeWidth, mStrokeColor, mLabelPaddingH, mLabelPaddingV, mLabelMargin, mFillColor, mLabelRadius);
-            CenterImageSpan imageSpan = new CenterImageSpan(drawable, DynamicDrawableSpan.ALIGN_BOTTOM, LabelTextView.this, mStrokeWidth);
-            mOriginBuilder.setSpan(imageSpan, 0, mLabelText.length() + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        } else {
-            mOriginBuilder.setSpan(mLabelDrawable, 0, mLabelText.length() + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        }
+        LabelDrawable drawable = new LabelDrawable(mLabelText, mLabelTextSize, mLabelColor, mStrokeWidth, mStrokeColor, mLabelPaddingH, mLabelPaddingV, mLabelMargin, mFillColor, mLabelRadius);
+        CenterImageSpan imageSpan = new CenterImageSpan(drawable, DynamicDrawableSpan.ALIGN_BOTTOM, LabelTextView.this, mStrokeWidth, true);
+        mOriginBuilder.setSpan(imageSpan, 0, mLabelText.length() + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         setText(mOriginBuilder);
     }
 
@@ -319,15 +303,18 @@ public class LabelTextView extends AppCompatTextView {
 
     protected static class CenterImageSpan extends ImageSpan {
 
+        private final boolean addExtra;
         private int initialDescent;
         private float lineSpacingExtra;
         private int strokeWidth;
+        //        private final int maxlineCount;
 
 
-        CenterImageSpan(Drawable d, int verticalAlignment, TextView textView, int strokeWidth) {
+        CenterImageSpan(Drawable d, int verticalAlignment, TextView textView, int strokeWidth, boolean addExtra) {
             super(d, verticalAlignment);
             lineSpacingExtra = textView.getLineSpacingExtra();
             this.strokeWidth = strokeWidth;
+            this.addExtra = addExtra;
         }
 
 
@@ -337,7 +324,11 @@ public class LabelTextView extends AppCompatTextView {
                          int top, int y, int bottom, Paint paint) {
             Drawable b = getCachedDrawable();
             canvas.save();
-            int transY = (int) (bottom - b.getBounds().bottom - lineSpacingExtra - strokeWidth * 0.5f);
+
+            int transY = (int) (bottom - b.getBounds().bottom - strokeWidth * 0.5f);
+            if (addExtra) {
+                transY -= lineSpacingExtra;
+            }
             canvas.translate(x, transY);
             b.draw(canvas);
             canvas.restore();
@@ -360,6 +351,7 @@ public class LabelTextView extends AppCompatTextView {
                 }
                 fm.descent = extraSpace / 2 + initialDescent;
                 fm.bottom = fm.descent;
+                System.out.println("fm bottom:" + fm.bottom);
                 fm.ascent = -rect.bottom + fm.descent + rect.top;
                 fm.top = fm.ascent;
 

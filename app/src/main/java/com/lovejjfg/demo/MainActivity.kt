@@ -16,7 +16,7 @@
  *
  */
 
-package com.lovejjfg.powertext
+package com.lovejjfg.demo
 
 import android.graphics.Color
 import android.os.Bundle
