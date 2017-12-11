@@ -122,15 +122,17 @@ public class ExpandableTextView extends LabelTextView {
                     return true;
                 }
                 int lineCount = layout.getLineCount();
-                System.out.println("lineCount:" + lineCount);
                 if (lineCount > mDefaultLineCount) {
                     String substring;
+                    int moreLength = 0;
+                    String mText;
                     if (!TextUtils.isEmpty(mLabelText)) {
-                        String mText = "{" + mLabelText + "}" + mOriginalText;
-                        substring = mText.substring(0, layout.getLineEnd(mDefaultLineCount - 1) - mMoreHint.length() - 1);
+                        mText = "{" + mLabelText + "}" + mOriginalText;
                     } else {
-                        substring = mOriginalText.toString().substring(0, layout.getLineEnd(mDefaultLineCount - 1) - mMoreHint.length() - 1);
+                        mText = mOriginalText.toString();
                     }
+                    moreLength = getMoreLength(layout, moreLength, mText);
+                    substring = mText.substring(0, layout.getLineEnd(mDefaultLineCount - 1) - moreLength);
                     SpannableStringBuilder mOriginalBuilder = new SpannableStringBuilder(String.format("%s...%s", substring, mMoreHint));
                     mOriginalBuilder.setSpan(new ClickableSpan() {
                         @Override
@@ -160,6 +162,18 @@ public class ExpandableTextView extends LabelTextView {
                 return false;
             }
         });
+    }
+
+    private int getMoreLength(Layout layout, int moreLength, String mText) {
+        int lastLine = mDefaultLineCount - 1;
+        moreLength++;
+        String newText = mText.substring(layout.getLineStart(lastLine), layout.getLineEnd(lastLine) - moreLength);
+
+        while (getPaint().measureText(newText + "..." + mMoreHint) > layout.getWidth()) {
+            moreLength++;
+            newText = mText.substring(layout.getLineStart(lastLine), layout.getLineEnd(lastLine) - moreLength);
+        }
+        return moreLength;
     }
 
     @Override
