@@ -8,7 +8,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context="com.lovejjfg.demo.MainActivity">
+    tools:context="com.lovejjfg.demo.com.lovejjfg.powertext.demo.MainActivity">
 
     <com.lovejjfg.powertext.ExpandableTextView
         android:id="@+id/text"

@@ -49,7 +49,7 @@ import java.lang.ref.WeakReference;
 @SuppressWarnings("unused")
 public class LabelTextView extends AppCompatTextView {
 
-    private static final int DEFAULT_MARGIN = 10;
+    private static final int DEFAULT_MARGIN = 8;
     private static final int DEFAULT_STROKE_WIDTH = 1;
     private static final int DEFAULT_LABEL_TEXT_SIZE = 15;
     private static final int DEFAULT_PROMOTION_TEXT_COLOR = 0xff333333;
@@ -185,15 +185,7 @@ public class LabelTextView extends AppCompatTextView {
             setText(mOriginalText);
             return;
         }
-
-        post(new Runnable() {
-            @Override
-            public void run() {
-                buildLabelText();
-            }
-        });
-
-
+        buildLabelText();
     }
 
     private void buildLabelText() {

@@ -34,7 +34,6 @@ import android.text.style.ClickableSpan;
 import android.text.style.DynamicDrawableSpan;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 /**
  * Created by joe on 2017/12/8.
@@ -81,8 +80,10 @@ public class ExpandableTextView extends LabelTextView {
     public void setExpanded(boolean isExpand) {
         if (this.isExpand != isExpand) {
             this.isExpand = isExpand;
-            setMaxLines(Integer.MAX_VALUE);
             updateText();
+            if (mListener != null) {
+                mListener.onExpandChange(isExpand);
+            }
         }
     }
 
@@ -97,71 +98,61 @@ public class ExpandableTextView extends LabelTextView {
 
     @Override
     protected void updateText() {
+        if (!isExpand) {
+            setMaxLines(mDefaultLineCount);
+        } else {
+            setMaxLines(Integer.MAX_VALUE);
+        }
         super.updateText();
         if (TextUtils.isEmpty(mOriginalText)) {
             return;
         }
-        post(new Runnable() {
-            @Override
-            public void run() {
-                calculateLines();
-            }
-        });
-
+        calculateLineCount();
     }
 
-    private void calculateLines() {
-        getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                Layout layout = getLayout();
-                if (layout == null || isExpand) {
-                    setMaxLines(Integer.MAX_VALUE);
-                    getViewTreeObserver().removeOnPreDrawListener(
-                            this);
-                    return true;
-                }
-                int lineCount = layout.getLineCount();
-                if (lineCount > mDefaultLineCount) {
-                    String substring;
-                    int moreLength = 0;
-                    String mText;
-                    if (!TextUtils.isEmpty(mLabelText)) {
-                        mText = "{" + mLabelText + "}" + mOriginalText;
-                    } else {
-                        mText = mOriginalText.toString();
-                    }
-                    moreLength = getMoreLength(layout, moreLength, mText);
-                    substring = mText.substring(0, layout.getLineEnd(mDefaultLineCount - 1) - moreLength);
-                    SpannableStringBuilder mOriginalBuilder = new SpannableStringBuilder(String.format("%s...%s", substring, mMoreHint));
-                    mOriginalBuilder.setSpan(new ClickableSpan() {
-                        @Override
-                        public void onClick(View widget) {
-                            setExpanded(true);
-                        }
-
-                        @Override
-                        public void updateDrawState(TextPaint ds) {
-                            super.updateDrawState(ds);
-                            ds.setUnderlineText(false);
-                            ds.setColor(mHintColor);
-                            ds.bgColor = Color.TRANSPARENT;
-
-                        }
-                    }, substring.length() + 3, mOriginalBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    if (!TextUtils.isEmpty(mLabelText)) {
-                        LabelDrawable drawable = new LabelDrawable(mLabelText, mLabelTextSize, mLabelColor, mStrokeWidth, mStrokeColor, mLabelPaddingH, mLabelPaddingV, mLabelMargin, mFillColor, mLabelRadius);
-                        CenterImageSpan mImageSpan = new CenterImageSpan(drawable, DynamicDrawableSpan.ALIGN_BOTTOM, ExpandableTextView.this, mStrokeWidth, mDefaultLineCount > 1);
-                        mOriginalBuilder.setSpan(mImageSpan, 0, mLabelText.length() + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                    }
-                    setText(mOriginalBuilder);
-                }
-
-                getViewTreeObserver().removeOnPreDrawListener(
-                        this);
-                return false;
+    private boolean calculateLineCount() {
+        Layout layout = getLayout();
+        if (layout == null || isExpand) {
+            setMaxLines(Integer.MAX_VALUE);
+            return false;
+        }
+        int lineCount = layout.getLineCount();
+        if (lineCount > mDefaultLineCount) {
+            String substring;
+            int moreLength = 0;
+            String mText;
+            if (!TextUtils.isEmpty(mLabelText)) {
+                mText = "{" + mLabelText + "}" + mOriginalText;
+            } else {
+                mText = mOriginalText.toString();
             }
-        });
+            moreLength = getMoreLength(layout, moreLength, mText);
+            substring = mText.substring(0, layout.getLineEnd(mDefaultLineCount - 1) - moreLength);
+            SpannableStringBuilder mOriginalBuilder = new SpannableStringBuilder(String.format("%s...%s", substring, mMoreHint));
+            mOriginalBuilder.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    setExpanded(true);
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                    ds.setColor(mHintColor);
+                    ds.bgColor = Color.TRANSPARENT;
+
+                }
+            }, substring.length() + 3, mOriginalBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (!TextUtils.isEmpty(mLabelText)) {
+                LabelDrawable drawable = new LabelDrawable(mLabelText, mLabelTextSize, mLabelColor, mStrokeWidth, mStrokeColor, mLabelPaddingH, mLabelPaddingV, mLabelMargin, mFillColor, mLabelRadius);
+                CenterImageSpan mImageSpan = new CenterImageSpan(drawable, DynamicDrawableSpan.ALIGN_BOTTOM, ExpandableTextView.this, mStrokeWidth, mDefaultLineCount > 1);
+                mOriginalBuilder.setSpan(mImageSpan, 0, mLabelText.length() + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            }
+            setText(mOriginalBuilder);
+            setMaxLines(mDefaultLineCount);
+        }
+        return true;
     }
 
     private int getMoreLength(Layout layout, int moreLength, String mText) {
@@ -225,4 +216,23 @@ public class ExpandableTextView extends LabelTextView {
 
     }
 
+    @Nullable
+    private ExpandChangeListener mListener;
+
+    public void setOnExpandChangeListener(ExpandChangeListener listener) {
+        mListener = listener;
+    }
+
+    public interface ExpandChangeListener {
+        void onExpandChange(boolean expanded);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int lineCount = getLayout().getLineCount();
+        if (calculateLineCount()) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
 }
