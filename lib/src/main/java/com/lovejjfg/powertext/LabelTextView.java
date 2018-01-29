@@ -30,7 +30,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatTextView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -47,7 +46,7 @@ import java.lang.ref.WeakReference;
  */
 
 @SuppressWarnings("unused")
-public class LabelTextView extends AppCompatTextView {
+public class LabelTextView extends ClickFixedTextView {
 
     private static final int DEFAULT_MARGIN = 8;
     private static final int DEFAULT_STROKE_WIDTH = 1;
@@ -179,6 +178,7 @@ public class LabelTextView extends AppCompatTextView {
 
     protected void updateText() {
         if (TextUtils.isEmpty(mOriginalText)) {
+            setText(null);
             return;
         }
         if (TextUtils.isEmpty(mLabelText)) {

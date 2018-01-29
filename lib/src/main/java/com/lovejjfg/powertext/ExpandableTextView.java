@@ -29,11 +29,11 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.DynamicDrawableSpan;
 import android.util.AttributeSet;
 import android.view.View;
+
 
 /**
  * Created by joe on 2017/12/8.
@@ -68,7 +68,7 @@ public class ExpandableTextView extends LabelTextView {
             mMoreHint = "更多";
         }
         a.recycle();
-        setMovementMethod(LinkMovementMethod.getInstance());
+        setMovementMethod(FixedLinkMovementMethod.getInstance());
     }
 
     @Override
@@ -80,10 +80,10 @@ public class ExpandableTextView extends LabelTextView {
     public void setExpanded(boolean isExpand) {
         if (this.isExpand != isExpand) {
             this.isExpand = isExpand;
-            updateText();
-            if (mListener != null) {
-                mListener.onExpandChange(isExpand);
-            }
+        }
+        updateText();
+        if (mListener != null) {
+            mListener.onExpandChange(isExpand);
         }
     }
 
@@ -104,13 +104,13 @@ public class ExpandableTextView extends LabelTextView {
             setMaxLines(Integer.MAX_VALUE);
         }
         super.updateText();
-        if (TextUtils.isEmpty(mOriginalText)) {
-            return;
-        }
         calculateLineCount();
     }
 
     private boolean calculateLineCount() {
+        if (TextUtils.isEmpty(mOriginalText)) {
+            return true;
+        }
         Layout layout = getLayout();
         if (layout == null || isExpand) {
             setMaxLines(Integer.MAX_VALUE);
