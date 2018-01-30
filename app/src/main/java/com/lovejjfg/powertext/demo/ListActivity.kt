@@ -84,6 +84,12 @@ class ListActivity : AppCompatActivity() {
             }
             view.isExpanded = t?.expand!!
             view.setOriginalText(t?.text)
+            view.setOnClickListener {
+                println("click.....")
+            }
+            itemView.setOnClickListener {
+                println("itemView onClick ...")
+            }
         }
 
     }

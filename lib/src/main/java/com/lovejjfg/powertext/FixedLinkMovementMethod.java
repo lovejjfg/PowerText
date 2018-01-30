@@ -72,6 +72,9 @@ public class FixedLinkMovementMethod extends LinkMovementMethod {
             } else {
                 Selection.removeSelection(buffer);
                 super.onTouchEvent(widget, buffer, event);
+                if (widget instanceof ClickFixedTextView) {
+                    ((ClickFixedTextView) widget).linkClicked = false;
+                }
                 return false;
             }
         }
