@@ -6,7 +6,7 @@ _Handle TextView with Label and click to show full lines._
 
 ![screenshot](https://raw.githubusercontent.com/lovejjfg/screenshort/0523a2cff6067eeeda05838921d6d13256ffbbcb/WX20171210-205622%402x.png)
 
-![screenshot](https://raw.githubusercontent.com/lovejjfg/screenshort/db8c2325e9091eb8c9a420dd2017c7273d0814f2/WechatIMG78.jpeg)
+![screenshot](https://raw.githubusercontent.com/lovejjfg/screenshort/7e1df5786fbe84814f3722e80e3194e99469cfd8/WechatIMG78.jpeg)
 
 
 ## 快速使用
