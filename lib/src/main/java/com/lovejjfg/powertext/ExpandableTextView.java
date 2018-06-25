@@ -30,7 +30,6 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
-import android.text.style.DynamicDrawableSpan;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -71,7 +70,7 @@ public class ExpandableTextView extends LabelTextView {
 
     @Override
     public void setOriginalText(CharSequence text) {
-        mOriginalText = text;
+        super.setOriginalText(text);
         updateText();
     }
 
@@ -106,7 +105,8 @@ public class ExpandableTextView extends LabelTextView {
     }
 
     private boolean calculateLineCount() {
-        if (TextUtils.isEmpty(mOriginalText)) {
+        CharSequence mText = getText();
+        if (TextUtils.isEmpty(mText)) {
             return true;
         }
         Layout layout = getLayout();
@@ -115,48 +115,45 @@ public class ExpandableTextView extends LabelTextView {
             return false;
         }
         int lineCount = layout.getLineCount();
+        SpannableStringBuilder mOriginalBuilder;
         if (lineCount > mDefaultLineCount) {
             CharSequence substring;
             int moreLength = 0;
-            CharSequence mText;
-            if (!TextUtils.isEmpty(mLabelText)) {
-                mText = "{" + mLabelText + "}" + mOriginalText;
-            } else {
-                mText = mOriginalText.toString();
-            }
             moreLength = getMoreLength(layout, moreLength, mText);
             substring = mText.subSequence(0, layout.getLineEnd(mDefaultLineCount - 1) - moreLength);
-            SpannableStringBuilder mOriginalBuilder = new SpannableStringBuilder(String.format("%s...%s", substring, mMoreHint));
-            mOriginalBuilder.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(View widget) {
-                    setExpanded(true);
-                }
-
-                @Override
-                public void updateDrawState(TextPaint ds) {
-                    super.updateDrawState(ds);
-                    ds.setUnderlineText(false);
-                    ds.setColor(mHintColor);
-                    ds.bgColor = Color.TRANSPARENT;
-
-                }
-            }, substring.length() + 3, mOriginalBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            if (!TextUtils.isEmpty(mLabelText)) {
-                LabelDrawable drawable = new LabelDrawable(mLabelText, mLabelTextSize, mLabelColor, mStrokeWidth, mStrokeColor, mLabelPaddingH, mLabelPaddingV, mLabelMargin, mFillColor, mLabelRadius);
-                CenterImageSpan mImageSpan = new CenterImageSpan(drawable, DynamicDrawableSpan.ALIGN_BOTTOM, ExpandableTextView.this, mStrokeWidth, mDefaultLineCount > 1);
-                mOriginalBuilder.setSpan(mImageSpan, 0, mLabelText.length() + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            }
-            setText(mOriginalBuilder);
+            mOriginalBuilder =
+                new SpannableStringBuilder(String.format("%s...%s", substring, mMoreHint));
+            buildMoreSpan(mOriginalBuilder, substring);
+            buildLabel(mOriginalBuilder);
+            buildPreSpans(mOriginalBuilder);
             setMaxLines(mDefaultLineCount);
+            setText(mOriginalBuilder);
         }
         return true;
+    }
+
+    private void buildMoreSpan(SpannableStringBuilder mOriginalBuilder, CharSequence substring) {
+        mOriginalBuilder.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                setExpanded(true);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(mHintColor);
+                ds.bgColor = Color.TRANSPARENT;
+            }
+        }, substring.length() + 3, mOriginalBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private int getMoreLength(Layout layout, int moreLength, CharSequence mText) {
         int lastLine = mDefaultLineCount - 1;
         moreLength++;
-        CharSequence newText = mText.subSequence(layout.getLineStart(lastLine), layout.getLineEnd(lastLine) - moreLength);
+        CharSequence newText =
+            mText.subSequence(layout.getLineStart(lastLine), layout.getLineEnd(lastLine) - moreLength);
 
         while (getPaint().measureText(newText + "..." + mMoreHint) > layout.getWidth()) {
             moreLength++;
