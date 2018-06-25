@@ -343,7 +343,6 @@ public class LabelTextView extends ClickFixedTextView {
                 }
                 fm.descent = extraSpace / 2 + initialDescent;
                 fm.bottom = fm.descent;
-                System.out.println("fm bottom:" + fm.bottom);
                 fm.ascent = -rect.bottom + fm.descent + rect.top;
                 fm.top = fm.ascent;
 

@@ -34,7 +34,6 @@ import android.text.style.DynamicDrawableSpan;
 import android.util.AttributeSet;
 import android.view.View;
 
-
 /**
  * Created by joe on 2017/12/8.
  * Email: lovejjfg@gmail.com
@@ -47,7 +46,6 @@ public class ExpandableTextView extends LabelTextView {
     private boolean isExpand = false;
     private static final int HINT_COLOR = 0xffff4081;
     private int mHintColor = HINT_COLOR;
-
 
     public ExpandableTextView(Context context) {
         this(context, null);
@@ -118,16 +116,16 @@ public class ExpandableTextView extends LabelTextView {
         }
         int lineCount = layout.getLineCount();
         if (lineCount > mDefaultLineCount) {
-            String substring;
+            CharSequence substring;
             int moreLength = 0;
-            String mText;
+            CharSequence mText;
             if (!TextUtils.isEmpty(mLabelText)) {
                 mText = "{" + mLabelText + "}" + mOriginalText;
             } else {
                 mText = mOriginalText.toString();
             }
             moreLength = getMoreLength(layout, moreLength, mText);
-            substring = mText.substring(0, layout.getLineEnd(mDefaultLineCount - 1) - moreLength);
+            substring = mText.subSequence(0, layout.getLineEnd(mDefaultLineCount - 1) - moreLength);
             SpannableStringBuilder mOriginalBuilder = new SpannableStringBuilder(String.format("%s...%s", substring, mMoreHint));
             mOriginalBuilder.setSpan(new ClickableSpan() {
                 @Override
@@ -155,14 +153,14 @@ public class ExpandableTextView extends LabelTextView {
         return true;
     }
 
-    private int getMoreLength(Layout layout, int moreLength, String mText) {
+    private int getMoreLength(Layout layout, int moreLength, CharSequence mText) {
         int lastLine = mDefaultLineCount - 1;
         moreLength++;
-        String newText = mText.substring(layout.getLineStart(lastLine), layout.getLineEnd(lastLine) - moreLength);
+        CharSequence newText = mText.subSequence(layout.getLineStart(lastLine), layout.getLineEnd(lastLine) - moreLength);
 
         while (getPaint().measureText(newText + "..." + mMoreHint) > layout.getWidth()) {
             moreLength++;
-            newText = mText.substring(layout.getLineStart(lastLine), layout.getLineEnd(lastLine) - moreLength);
+            newText = mText.subSequence(layout.getLineStart(lastLine), layout.getLineEnd(lastLine) - moreLength);
         }
         return moreLength;
     }
@@ -175,7 +173,6 @@ public class ExpandableTextView extends LabelTextView {
         }
         setExpanded(((SavedState) state).isExband);
         super.onRestoreInstanceState(((SavedState) state).getSuperState());
-
     }
 
     @Override
@@ -204,16 +201,15 @@ public class ExpandableTextView extends LabelTextView {
         }
 
         public static final Creator<SavedState> CREATOR =
-                new Creator<SavedState>() {
-                    public SavedState createFromParcel(Parcel in) {
-                        return new SavedState(in);
-                    }
+            new Creator<SavedState>() {
+                public SavedState createFromParcel(Parcel in) {
+                    return new SavedState(in);
+                }
 
-                    public SavedState[] newArray(int size) {
-                        return new SavedState[size];
-                    }
-                };
-
+                public SavedState[] newArray(int size) {
+                    return new SavedState[size];
+                }
+            };
     }
 
     @Nullable
