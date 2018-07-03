@@ -4,9 +4,12 @@ _Handle TextView with Label and click to show full lines._
 
 [![Download](https://api.bintray.com/packages/lovejjfg/maven/powerText/images/download.svg) ](https://bintray.com/lovejjfg/maven/powerText/_latestVersion)[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PowerText-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6548)
 
+![art3](https://raw.githubusercontent.com/lovejjfg/PowerText/master/art/art3.jpg)![art1](https://raw.githubusercontent.com/lovejjfg/PowerText/master/art/art1.png)
+
+![art2](https://raw.githubusercontent.com/lovejjfg/PowerText/master/art/art2.jpg)
+
 ![screenshot](https://raw.githubusercontent.com/lovejjfg/screenshort/0523a2cff6067eeeda05838921d6d13256ffbbcb/WX20171210-205622%402x.png)
 
-![screenshot](https://raw.githubusercontent.com/lovejjfg/screenshort/7e1df5786fbe84814f3722e80e3194e99469cfd8/WechatIMG78.jpeg)
 
 
 ## 快速使用
