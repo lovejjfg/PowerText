@@ -12,7 +12,7 @@
 
     <com.lovejjfg.powertext.ExpandableTextView
         android:id="@+id/text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:lineSpacingExtra="10dp"
@@ -26,9 +26,9 @@
         app:moreHintColor="#f00"
         />
 
-    <com.lovejjfg.powertext.LabelTextView
+    <com.lovejjfg.powertext.ExpandableTextView
         android:id="@+id/tvLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="20dp"

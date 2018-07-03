@@ -19,11 +19,13 @@
 package com.lovejjfg.powertext.demo
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import com.lovejjfg.demo.R
 import kotlinx.android.synthetic.main.activity_main.text
 import kotlinx.android.synthetic.main.activity_main.tvLabel
@@ -34,13 +36,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 //        val originalText = "Sister zhang zetian has been selected as the world's outstanding young man in davos in 2017. The world's outstanding youth community is one of the 1086 multi-stakeholder communities established in the world economy BBS (BBS), which aims to recruit the best young talents in the world and improve the situation of the world. The selection criteria for the world's outstanding young people include its outstanding professional achievements and potential leadership and commitment to promoting change."
-        val originalText =
-            "奶茶妹妹章泽天成功入选2017年达沃斯全球杰出青年。"
-//        val originalText = "奶茶妹妹章泽天成功入选2017年达沃斯全球杰出青年。全球杰出青年社区是世界经济论坛（达沃斯论坛）成立的多方利益相关者社区之一，致力于网罗全球最优秀青年才俊，改善世界状况。全球杰出青年的评选标准包括其卓越的职业成就和潜在领导力以及致力于推动变革的承诺。"
+//        val originalText =
+//            "奶茶妹妹章泽天成功入选2017年达沃斯全球杰出青年。"
+        val originalText = "Revision 27.1.1\n" +
+            "(April 2018)\n" +
+            "Fixed issues\n" +
+            "AsyncListDiffer doesn't call getChangePayload (AOSP issue 73961809)\n" +
+            "Fragment ViewModel's onCleared not called (AOSP issue 74139250)\n" +
+            "RecyclerView.setRecycledViewPool() increases attachCount even when adapter is null\n" +
+            "RecyclerView NPE if SmoothScroller.onStop calling stop() or startSmoothScroller()\n" +
+            "Fragment Replacement transaction causes previous fragment to flicker after new fragment is shown (AOSP issue 74051124)"
 
         val string = SpannableString(originalText)
-        string.setSpan(ForegroundColorSpan(Color.RED), 2, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        string.setSpan(ForegroundColorSpan(Color.BLUE), 11, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        string.setSpan(StyleSpan(Typeface.BOLD), 0, 16, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        string.setSpan(StyleSpan(Typeface.BOLD), 11, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 //        string.setSpan(
 //            ForegroundColorSpan(Color.GREEN),
 //            indexOf,
@@ -48,12 +58,12 @@ class MainActivity : AppCompatActivity() {
 //            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
 //        )
 
-        text.setLabelText("奶茶妹妹")
+//        text.setLabelText("奶茶妹妹")
         text.setOriginalText(string)
 
         var isFill = true
         tvLabel.setOriginalText(string)
-        tvLabel.setLabelText("奶茶妹妹1")
+//        tvLabel.setLabelText("奶茶妹妹1")
         tvLabel.setOnClickListener {
             isFill = !isFill
             tvLabel.setFillColor(isFill)
