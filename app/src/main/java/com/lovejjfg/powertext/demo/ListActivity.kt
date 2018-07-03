@@ -19,6 +19,7 @@
 package com.lovejjfg.powertext.demo
 
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -26,6 +27,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -58,7 +60,6 @@ class ListActivity : AppCompatActivity() {
             if (d % 2 == 0) {
 
                 val originalText = "Revision 27.1.1\n" +
-                    "(April 2018)\n" +
                     "Fixed issues\n" +
                     "AsyncListDiffer doesn't call getChangePayload (AOSP issue 73961809)\n" +
                     "Fragment ViewModel's onCleared not called (AOSP issue 74139250)\n" +
@@ -69,6 +70,7 @@ class ListActivity : AppCompatActivity() {
                 val string = SpannableString(originalText)
 
                 string.setSpan(StyleSpan(Typeface.BOLD), 0, 16, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                string.setSpan(ForegroundColorSpan(Color.RED), 0, 16, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 ListBean(string, false)
             } else {
                 ListBean(

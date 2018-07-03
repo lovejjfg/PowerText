@@ -31,5 +31,5 @@
     app:defaultLineCount="3"
     app:defaultMoreHint="查看更多"
     app:labelPadding="5dp"
-    app:labelText="奶茶妹妹"
+    app:labelText="NOTE"
     app:moreHintColor="#f00"/>
