@@ -20,25 +20,14 @@ package com.lovejjfg.powertext;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
-import android.util.Log;
-import java.lang.ref.WeakReference;
+import android.util.SparseIntArray;
 
 /**
  * Created by joe on 2017/12/7.
@@ -49,12 +38,13 @@ import java.lang.ref.WeakReference;
 public class LabelTextView extends ClickFixedTextView {
 
     private static final int DEFAULT_MARGIN = 8;
+    private static final int DEFAULT_PADDING = 2;
     private static final int DEFAULT_STROKE_WIDTH = 1;
     private static final int DEFAULT_LABEL_TEXT_SIZE = 15;
     private static final int DEFAULT_PROMOTION_TEXT_COLOR = 0xff333333;
     private static final int DEFAULT_PROMOTION_STROKE_COLOR = 0xffff0000;
     private String mLabelText;
-    private CharSequence mOriginalText;
+    protected CharSequence mOriginalText;
     private int mLabelPadding;
     private int mLabelPaddingH;
     private int mLabelPaddingV;
@@ -66,6 +56,7 @@ public class LabelTextView extends ClickFixedTextView {
     private boolean mFillColor;
     private int mLabelRadius;
     private int labelLength;
+    protected int maxLength;
 
     public LabelTextView(Context context) {
         this(context, null);
@@ -87,7 +78,7 @@ public class LabelTextView extends ClickFixedTextView {
         mLabelTextSize = a.getDimensionPixelSize(R.styleable.LabelTextView_labelTextSize,
             (int) (DEFAULT_LABEL_TEXT_SIZE * scaledDensity));
         mLabelPadding =
-            a.getDimensionPixelSize(R.styleable.LabelTextView_labelPadding, (int) (DEFAULT_MARGIN * density));
+            a.getDimensionPixelSize(R.styleable.LabelTextView_labelPadding, (int) (DEFAULT_PADDING * density));
         mLabelPaddingH = a.getDimensionPixelSize(R.styleable.LabelTextView_labelPaddingHorizontal, mLabelPadding);
         mLabelPaddingV = a.getDimensionPixelSize(R.styleable.LabelTextView_labelPaddingVertical, mLabelPadding);
         mLabelMargin = a.getDimensionPixelSize(R.styleable.LabelTextView_labelMargin, (int) (DEFAULT_MARGIN * density));
@@ -205,13 +196,15 @@ public class LabelTextView extends ClickFixedTextView {
         if (TextUtils.isEmpty(mLabelText)) {
             return;
         }
-        LabelDrawable drawable =
-            new LabelDrawable(mLabelText, mLabelTextSize, mLabelColor, mStrokeWidth, mStrokeColor, mLabelPaddingH,
+        CenterImageSpan.LabelDrawable drawable =
+            new CenterImageSpan.LabelDrawable(mLabelText, mLabelTextSize, mLabelColor, mStrokeWidth, mStrokeColor,
+                mLabelPaddingH,
                 mLabelPaddingV, mLabelMargin, mFillColor, mLabelRadius);
-        CenterImageSpan imageSpan =
-            new CenterImageSpan(drawable, getLineSpacingExtra(), mStrokeWidth);
+        ImageSpan imageSpan = new CenterImageSpan(drawable, this, mStrokeWidth);
         mOriginBuilder.setSpan(imageSpan, 0, mLabelText.length() + 2, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     }
+
+    private SparseIntArray array = new SparseIntArray();
 
     protected void buildPreSpans(SpannableStringBuilder mOriginBuilder) {
         if (mOriginalText instanceof SpannableString) {
@@ -221,183 +214,23 @@ public class LabelTextView extends ClickFixedTextView {
                     try {
                         int spanStart = ((SpannableString) mOriginalText).getSpanStart(span);
                         int spanEnd = ((SpannableString) mOriginalText).getSpanEnd(span);
+                        if (array.indexOfValue(span.hashCode()) == -1) {
+                            array.put(span.hashCode(), spanEnd);
+                        }
+                        int realEnd = array.get(span.hashCode());
+                        int end = spanEnd > maxLength && maxLength > 0 ? maxLength : realEnd + labelLength;
                         int spanFlags = ((SpannableString) mOriginalText).getSpanFlags(span);
-                        mOriginBuilder.setSpan(span, spanStart + labelLength, spanEnd + labelLength, spanFlags);
+                        int start = spanStart + labelLength;
+                        System.out.println(
+                            "真正的设置 buildPreSpans:start:" + start + ";;end:" + end + ";;;labelLength:" + labelLength +
+                                ";;"
+                                + "span:" + span);
+                        mOriginBuilder.setSpan(span, start, end, spanFlags);
                     } catch (Exception e) {
-                        //ignore
+                        e.printStackTrace();
                     }
                 }
             }
         }
-    }
-
-    protected static class LabelDrawable extends Drawable {
-
-        private Paint mPaint;
-        private Paint mTextPaint;
-
-        private int mBorderColor;
-        private int mOutStroke;
-        private final Rect bounds;
-        private int mTextMargin;
-        private int mTextPaddingH;
-        private int mTextPaddingV;
-        private final String mText;
-        private int mLabelColor;
-        private int mLabelSize;
-        private int ddy;
-        private boolean mFillColor;
-        private RectF mRectf;
-        private int mLabelRadius;
-
-        //maybe use builder
-        LabelDrawable(String text, int mLabelSize, int promotionColor, int strokeWidth, int strokeColor, int paddingH,
-            int paddingV, int margin, boolean fillColor, int labelRadius) {
-            this.mTextPaddingH = paddingH;
-            this.mTextPaddingV = paddingV;
-            this.mFillColor = fillColor;
-            mTextMargin = margin;
-            mOutStroke = strokeWidth;
-            this.mBorderColor = strokeColor;
-            this.mLabelColor = promotionColor;
-            this.mLabelSize = mLabelSize;
-            mLabelRadius = labelRadius;
-            mText = text;
-            preparePaint();
-            bounds = new Rect();
-            mTextPaint.getTextBounds(text, 0, text.length(), bounds);
-            if (bounds.top < 0) {
-                ddy = bounds.top;
-                bounds.top = 0;
-                bounds.bottom -= ddy;
-            }
-            bounds.right = bounds.right + mTextPaddingH * 2 + mTextMargin;
-            bounds.bottom = bounds.bottom + mTextPaddingV * 2;
-            setBounds(bounds);
-        }
-
-        @Override
-        protected void onBoundsChange(Rect bounds) {
-            super.onBoundsChange(bounds);
-            mRectf = new RectF(bounds);
-            mRectf.right -= mTextMargin;
-            mRectf.top += mOutStroke;
-            mRectf.left += mOutStroke * 0.5f;
-        }
-
-        void preparePaint() {
-            mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            if (mFillColor) {
-                mPaint.setStyle(Paint.Style.FILL);
-            } else {
-                mPaint.setStyle(Paint.Style.STROKE);
-                mPaint.setStrokeWidth(mOutStroke);
-            }
-            mPaint.setColor(mBorderColor);
-            mTextPaint = new Paint(mPaint);
-            mTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-            mTextPaint.setTextSize(mLabelSize);
-            mTextPaint.setColor(mLabelColor);
-            mTextPaint.setStrokeWidth(1f);
-            mTextPaint.setTextAlign(Paint.Align.CENTER);
-        }
-
-        @Override
-        public void draw(@NonNull Canvas canvas) {
-            canvas.drawRoundRect(mRectf, mLabelRadius, mLabelRadius, mPaint);
-            canvas.drawText(mText, mRectf.centerX(), mTextPaddingV - ddy + mOutStroke * 0.5f, mTextPaint);
-        }
-
-        @Override
-        public void setAlpha(@IntRange(from = 0, to = 255) int alpha) {
-
-        }
-
-        @Override
-        public void setColorFilter(@Nullable ColorFilter colorFilter) {
-
-        }
-
-        @Override
-        public int getOpacity() {
-            return PixelFormat.UNKNOWN;
-        }
-    }
-
-    private static class CenterImageSpan extends ImageSpan {
-
-        private int initialDescent;
-        private float lineSpacingExtra;
-        private int strokeWidth;
-        //        private final int maxlineCount;
-
-        CenterImageSpan(Drawable d, float lineSpacingExtra, int strokeWidth) {
-            super(d, DynamicDrawableSpan.ALIGN_BOTTOM);
-            this.lineSpacingExtra = lineSpacingExtra;
-            this.strokeWidth = strokeWidth;
-        }
-
-        @Override
-        public void draw(Canvas canvas, CharSequence text,
-            int start, int end, float x,
-            int top, int y, int bottom, Paint paint) {
-            Drawable b = getCachedDrawable();
-            canvas.save();
-
-            int transY = (int) (bottom - b.getBounds().bottom - strokeWidth * 0.5f);
-            Log.e("TAG", "draw: " + lineSpacingExtra);
-            transY -= lineSpacingExtra;
-            canvas.translate(x, transY);
-            b.draw(canvas);
-            canvas.restore();
-        }
-
-        @Override
-        public int getSize(Paint paint, CharSequence text,
-            int start, int end,
-            Paint.FontMetricsInt fm) {
-            Drawable d = getCachedDrawable();
-            Rect rect = d.getBounds();
-            int extraSpace = 0;
-            if (fm != null) {
-
-                int textHeight = fm.descent - fm.ascent;
-                if (rect.bottom - rect.top - textHeight >= 0) {
-                    initialDescent = fm.descent;
-                    extraSpace = rect.bottom - rect.top - textHeight;
-                }
-                fm.descent = extraSpace / 2 + initialDescent;
-                fm.bottom = fm.descent;
-                fm.ascent = -rect.bottom + fm.descent + rect.top;
-                fm.top = fm.ascent;
-            }
-
-            return rect.right;
-        }
-
-        // Redefined locally because it is a private member from DynamicDrawableSpan
-        private Drawable getCachedDrawable() {
-            WeakReference<Drawable> wr = mDrawableRef;
-            Drawable d = null;
-
-            if (wr != null) {
-                d = wr.get();
-            }
-
-            if (d == null) {
-                d = getDrawable();
-                mDrawableRef = new WeakReference<>(d);
-            }
-
-            return d;
-        }
-
-        private WeakReference<Drawable> mDrawableRef;
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        System.out.println(this + "::ondraw...");
     }
 }

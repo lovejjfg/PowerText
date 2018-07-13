@@ -121,6 +121,7 @@ public class ExpandableTextView extends LabelTextView {
             int moreLength = 0;
             moreLength = getMoreLength(layout, moreLength, mText);
             substring = mText.subSequence(0, layout.getLineEnd(mDefaultLineCount - 1) - moreLength);
+            maxLength = substring.length();
             mOriginalBuilder =
                 new SpannableStringBuilder(String.format("%s...%s", substring, mMoreHint));
             buildMoreSpan(mOriginalBuilder, substring);
@@ -136,6 +137,7 @@ public class ExpandableTextView extends LabelTextView {
         mOriginalBuilder.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
+                maxLength = 0;
                 setExpanded(true);
             }
 
