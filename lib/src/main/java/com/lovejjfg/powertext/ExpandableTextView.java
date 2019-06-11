@@ -41,10 +41,10 @@ import android.view.View;
 public class ExpandableTextView extends LabelTextView {
 
     private int mDefaultLineCount = 2;
-    private String mMoreHint = "更多";
-    private boolean isExpand = false;
+    private String mMoreHint;
+    private boolean isExpand;
     private static final int HINT_COLOR = 0xffff4081;
-    private int mHintColor = HINT_COLOR;
+    private int mHintColor;
 
     public ExpandableTextView(Context context) {
         this(context, null);
@@ -107,7 +107,7 @@ public class ExpandableTextView extends LabelTextView {
     private boolean calculateLineCount() {
         CharSequence mText = getText();
         if (TextUtils.isEmpty(mText)) {
-            return true;
+            return false;
         }
         Layout layout = getLayout();
         if (layout == null || isExpand) {
@@ -225,7 +225,6 @@ public class ExpandableTextView extends LabelTextView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int lineCount = getLayout().getLineCount();
         if (calculateLineCount()) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }

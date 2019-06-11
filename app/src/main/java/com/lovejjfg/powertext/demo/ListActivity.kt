@@ -69,8 +69,8 @@ class ListActivity : AppCompatActivity() {
 
                 val string = SpannableString(originalText)
 
-                string.setSpan(StyleSpan(Typeface.BOLD), 0, 16, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                string.setSpan(ForegroundColorSpan(Color.RED), 0, 16, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                string.setSpan(StyleSpan(Typeface.BOLD), 0, 200, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                string.setSpan(ForegroundColorSpan(Color.RED), 0, 20, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 ListBean(string, false)
             } else {
                 ListBean(

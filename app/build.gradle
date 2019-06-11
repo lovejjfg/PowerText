@@ -36,8 +36,8 @@ dependencies {
 
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation 'com.lovejjfg.powertext:lib:0.0.5'
-//    implementation project(':lib')
+//    implementation 'com.lovejjfg.powertext:lib:0.0.5'
+    implementation project(':lib')
     implementation 'com.lovejjfg.powerrecycle:powerrecycle:1.2.2'
 
 }

@@ -19,17 +19,16 @@
 
 
 <com.lovejjfg.powertext.ExpandableTextView
-    android:id="@+id/text"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/text"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="20dp"
-    android:lineSpacingExtra="10dp"
     android:textColor="#333"
     android:textSize="16sp"
     app:defaultLineCount="3"
     app:defaultMoreHint="查看更多"
-    app:labelPadding="5dp"
+    app:labelPadding="2dp"
     app:labelText="NOTE"
     app:moreHintColor="#f00"/>

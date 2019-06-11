@@ -49,7 +49,8 @@ class MainActivity : AppCompatActivity() {
 
         val string = SpannableString(originalText)
 
-        string.setSpan(StyleSpan(Typeface.BOLD), 0, 16, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        string.setSpan(StyleSpan(Typeface.BOLD), 0, 200, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
+        string.setSpan(ForegroundColorSpan(Color.GREEN), 0, 200, Spannable.SPAN_EXCLUSIVE_INCLUSIVE)
 //        string.setSpan(StyleSpan(Typeface.BOLD), 11, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 //        string.setSpan(
 //            ForegroundColorSpan(Color.GREEN),
