@@ -20,7 +20,6 @@ package com.lovejjfg.powertext;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -28,6 +27,7 @@ import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
+import androidx.annotation.Nullable;
 
 /**
  * Created by joe on 2017/12/7.
@@ -221,10 +221,6 @@ public class LabelTextView extends ClickFixedTextView {
                         int end = spanEnd > maxLength && maxLength > 0 ? maxLength : realEnd + labelLength;
                         int spanFlags = ((SpannableString) mOriginalText).getSpanFlags(span);
                         int start = spanStart + labelLength;
-                        System.out.println(
-                            "真正的设置 buildPreSpans:start:" + start + ";;end:" + end + ";;;labelLength:" + labelLength +
-                                ";;"
-                                + "span:" + span);
                         mOriginBuilder.setSpan(span, start, end, spanFlags);
                     } catch (Exception e) {
                         e.printStackTrace();

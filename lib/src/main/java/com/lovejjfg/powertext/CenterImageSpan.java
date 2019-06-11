@@ -25,12 +25,12 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
 import android.widget.TextView;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import java.lang.ref.WeakReference;
 
 /**
@@ -50,9 +50,9 @@ class CenterImageSpan extends ImageSpan {
     }
 
     @Override
-    public void draw(Canvas canvas, CharSequence text,
+    public void draw(@NonNull Canvas canvas, CharSequence text,
         int start, int end, float x,
-        int top, int y, int bottom, Paint paint) {
+        int top, int y, int bottom, @NonNull Paint paint) {
         Drawable b = getCachedDrawable();
         canvas.save();
         int transY = (int) ((bottom - b.getBounds().bottom - strokeWidth) * 0.5f);
@@ -64,7 +64,7 @@ class CenterImageSpan extends ImageSpan {
     }
 
     @Override
-    public int getSize(Paint paint, CharSequence text,
+    public int getSize(@NonNull Paint paint, CharSequence text,
         int start, int end,
         Paint.FontMetricsInt fm) {
         Drawable d = getCachedDrawable();

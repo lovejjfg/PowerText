@@ -23,7 +23,8 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -136,13 +137,13 @@ public class ExpandableTextView extends LabelTextView {
     private void buildMoreSpan(SpannableStringBuilder mOriginalBuilder, CharSequence substring) {
         mOriginalBuilder.setSpan(new ClickableSpan() {
             @Override
-            public void onClick(View widget) {
+            public void onClick(@NonNull View widget) {
                 maxLength = 0;
                 setExpanded(true);
             }
 
             @Override
-            public void updateDrawState(TextPaint ds) {
+            public void updateDrawState(@NonNull  TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
                 ds.setColor(mHintColor);

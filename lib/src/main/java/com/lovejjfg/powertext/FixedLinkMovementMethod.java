@@ -38,7 +38,7 @@ public class FixedLinkMovementMethod extends LinkMovementMethod {
         int action = event.getAction();
 
         if (action == MotionEvent.ACTION_UP ||
-                action == MotionEvent.ACTION_DOWN) {
+            action == MotionEvent.ACTION_DOWN) {
             int x = (int) event.getX();
             int y = (int) event.getY();
 
@@ -57,11 +57,10 @@ public class FixedLinkMovementMethod extends LinkMovementMethod {
             if (link.length != 0) {
                 if (action == MotionEvent.ACTION_UP) {
                     link[0].onClick(widget);
-
-                } else if (action == MotionEvent.ACTION_DOWN) {
+                } else {
                     Selection.setSelection(buffer,
-                            buffer.getSpanStart(link[0]),
-                            buffer.getSpanEnd(link[0]));
+                        buffer.getSpanStart(link[0]),
+                        buffer.getSpanEnd(link[0]));
                 }
 
                 if (widget instanceof ClickFixedTextView) {
@@ -83,12 +82,12 @@ public class FixedLinkMovementMethod extends LinkMovementMethod {
     }
 
     public static FixedLinkMovementMethod getInstance() {
-        if (sInstance == null)
+        if (sInstance == null) {
             sInstance = new FixedLinkMovementMethod();
+        }
 
         return sInstance;
     }
 
     private static FixedLinkMovementMethod sInstance;
-
 }

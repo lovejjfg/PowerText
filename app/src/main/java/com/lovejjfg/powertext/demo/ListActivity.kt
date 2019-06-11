@@ -22,9 +22,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -51,7 +51,7 @@ class ListActivity : AppCompatActivity() {
             val i = Intent(this, MainActivity::class.java)
             startActivity(i)
         }
-        mRecycler.layoutManager = LinearLayoutManager(this)
+        mRecycler.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         val listAdapter = ListAdapter()
         mRecycler.adapter = listAdapter
         val list = ArrayList<ListBean>()
